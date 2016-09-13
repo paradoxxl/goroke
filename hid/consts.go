@@ -12,8 +12,8 @@ const (
 	PlayPauseBtnMask byte = 1 << iota
 	NextBtnMask
 	PrevBtnMask
-	KeyDownBtnMask
-	KeyUpBtnMask
+	TempoUpBtnMask
+	TempoDownBtnMask
 	PitchDownBtnMask
 	PitchUpBtnMask
 	RecordBtnMask
@@ -27,5 +27,10 @@ const DataLength byte = 6
 const (
 	productID = 0x1117
 	vendorID = 0x07C0
+)
+
+const (
+	Play = true
+	Pause = false
 )
 

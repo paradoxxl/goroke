@@ -14,6 +14,8 @@ const (
 	PlayCommand = "<action type=\"play\"></action>"
 	PauseCommand = "<action type=\"pause\"></action>"
 	NextCommand = "<action type=\"next\"></action>"
+	PrevCommand = "<action type=\"previous\"></action>"
+
 	SeekCommand = "<action type=\"seek\">%v</action>"
 	PitchCommand = "<action type=\"pitch\">%v</action>"
 	TempoCommand = "<action type=\"tempo\">%v</action>"

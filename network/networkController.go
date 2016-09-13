@@ -39,6 +39,27 @@ func (self *NetworkController) MaleVolumeSliderPosChanged(pos byte){
 func (self *NetworkController) FemaleVolumeSliderPosChanged(pos byte){
 	self.sendString(fmt.Sprintf(FemaleVolumeCommand,pos))
 }
+func (self *NetworkController) PitchChanged(pitch int8){
+	self.sendString(fmt.Sprintf(PitchCommand,pitch))
+}
+func (self *NetworkController) TempoChanged(tempo int8){
+	self.sendString(fmt.Sprintf(TempoCommand, tempo))
+}
+
+func (self *NetworkController) PlayPressed(){
+	self.sendString(PlayCommand)
+}
+func (self *NetworkController) PausePressed(){
+	self.sendString(PauseCommand)
+}
+func (self *NetworkController) NextPressed(){
+	self.sendString(NextCommand)
+}
+func (self *NetworkController) PrevPressed(){
+	self.sendString(PrevCommand)
+}
+
+
 
 func (self *NetworkController) sendString(s string){
 	if self.Connected && self.Ws != nil{
