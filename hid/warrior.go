@@ -4,6 +4,7 @@ import (
 	"github.com/paradoxxl/goroke/network"
 	"github.com/paradoxxl/hid"
 	"log"
+	"time"
 )
 
 type WarriorController struct {
@@ -196,6 +197,7 @@ func (self *WarriorController) poll() {
 		default:
 			winputchan := self.wdev.ReadCh()
 			self.detectChanges(<-winputchan)
+			time.Sleep(PollingDelay)
 		}
 	}
 

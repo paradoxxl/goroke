@@ -8,6 +8,8 @@ const (
 	ButtonsBytePos
 )
 
+//Controls for final product
+/*
 const (
 	PlayPauseBtnMask byte = 1 << iota
 	NextBtnMask
@@ -18,6 +20,22 @@ const (
 	PitchUpBtnMask
 	RecordBtnMask
 )
+*/
+const (
+	PlayPauseBtnMask byte = 1 << iota
+	NextBtnMask
+	PrevBtnMask
+	RecordBtnMask
+	PitchUpBtnMask
+	PitchDownBtnMask
+	TempoUpBtnMask
+	TempoDownBtnMask
+
+
+
+)
+
+//Controls for Final product
 
 const MaxSliderPosHW float32 = 255.0
 const MaxSliderPosSW float32 = 100
@@ -34,3 +52,6 @@ const (
 	Pause = false
 )
 
+const (
+	PollingDelay = 50
+)
