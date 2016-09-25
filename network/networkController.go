@@ -15,6 +15,7 @@ type NetworkController struct{
 	Connected bool
 
 	Ws *websocket.Conn
+	sigkill chan interface{}
 }
 
 func NewNetworkController(KaraFunIP net.IP, KaraFunPort uint16) *NetworkController{
@@ -23,6 +24,7 @@ func NewNetworkController(KaraFunIP net.IP, KaraFunPort uint16) *NetworkControll
 		Port:KaraFunPort,
 		Connected:false,
 		Ws:nil,
+		sigkill:make(chan interface{}),
 	}
 }
 
@@ -82,9 +84,24 @@ func (self *NetworkController) Connect() bool{
 		self.Ws = ws
 		log.Printf("Connected to the server: %v",dst)
 		self.Connected = true
+		go self.receiveMsg()
 	}
 	return true
 }
 
 
-
+func (self *NetworkController) receiveMsg(){
+	var msg string
+	for{
+		select{
+		case <- self.sigkill:
+			return
+		default:
+			if err := websocket.Message.Receive(self.Ws, &msg); err != nil {
+				log.Printf("receive error %v", err)
+				return
+			}
+			fmt.Printf("Receive: %s\n", msg)
+		}
+	}
+}
