@@ -1,5 +1,7 @@
 package HID
 
+import "time"
+
 const (
 	GeneralVolumeSliderBytePos byte = iota
 	VoiceVolumeSliderBytePos
@@ -28,11 +30,8 @@ const (
 	RecordBtnMask
 	PitchUpBtnMask
 	PitchDownBtnMask
-	TempoUpBtnMask
 	TempoDownBtnMask
-
-
-
+	TempoUpBtnMask
 )
 
 //Controls for Final product
@@ -53,5 +52,5 @@ const (
 )
 
 const (
-	PollingDelay = 50
+	PollingDelay = time.Millisecond*50
 )
