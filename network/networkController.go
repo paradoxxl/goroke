@@ -5,6 +5,7 @@ import (
 	"golang.org/x/net/websocket"
 	"log"
 	"fmt"
+	"github.com/paradoxxl/goroke/audiorecorder"
 )
 
 
@@ -16,6 +17,8 @@ type NetworkController struct{
 
 	Ws *websocket.Conn
 	sigkill chan interface{}
+
+	Recorder audiorecorder.Recorder
 }
 
 func NewNetworkController(KaraFunIP net.IP, KaraFunPort uint16) *NetworkController{
@@ -62,6 +65,9 @@ func (self *NetworkController) PrevPressed(){
 }
 
 
+func (self *NetworkController) GetStatus(){
+	self.sendString(GetStatusCommand)
+}
 
 func (self *NetworkController) sendString(s string){
 	if self.Connected && self.Ws != nil{

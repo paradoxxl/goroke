@@ -5,6 +5,7 @@ import (
 	"github.com/paradoxxl/hid"
 	"log"
 	"time"
+	"github.com/paradoxxl/goroke/audiorecorder"
 )
 
 type WarriorController struct {
@@ -19,6 +20,7 @@ type WarriorController struct {
 	pollStop chan interface{}
 
 	NetworkController *network.NetworkController
+	Audiorecorder audiorecorder.Recorder
 }
 
 type WarriorControllerState struct {
@@ -146,9 +148,7 @@ func (self *WarriorController) detectChanges(input []byte) {
 	}
 	if btnchange, self.State.RecordBtnPressed = checkButton(self.State.RecordBtnPressed, getButtonState(RecordBtnMask, buttonInput)); btnchange {
 		log.Printf("Record pressed")
-
-		//Do some recorting stuff
-		//File-Format: ...
+		self.Audiorecorder.RecordButtonPressed()
 	}
 	if btnchange, self.State.TempoUpPressed = checkButton(self.State.TempoUpPressed, getButtonState(TempoDownBtnMask, buttonInput)); btnchange {
 		log.Printf("Tempo+ pressed")

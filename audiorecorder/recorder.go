@@ -5,21 +5,50 @@ import (
 	"os/exec"
 	"fmt"
 	"os"
+	"github.com/paradoxxl/goroke/network"
+	"github.com/paradoxxl/goroke/xmlparser"
 )
 
-type Recording struct{
+type Recorder struct{
 	Singer string
 	SongTitle string
 	Date time.Time
+	Recording bool
 
 	Cmd exec.Cmd
 	Filename string
 
 	sigkill chan interface{}
 
+	NetworkController *network.NetworkController
+
 }
 
-func (self *Recording) Setup(Singer string,SongTitle string){
+
+func (self *Recorder) RecordButtonPressed(){
+	if self.Recording{
+		self.Stop()
+	}else{
+		self.Start()
+	}
+}
+func (self *Recorder) XMLInput(input string){
+	parsed,err := xmlparser.ParseXML(input)
+	if err != nil{
+		fmt.Println(err)
+		return
+	}
+	singer := parsed.Queue.Items[0].Singer
+	title := parsed.Queue.Items[0].Title
+
+	if self.Recording && parsed.State != "playing"{
+		self.Stop()
+	}
+
+	self.Setup(singer,title)
+}
+
+func (self *Recorder) Setup(Singer string,SongTitle string){
 	self.Singer = Singer
 	self.SongTitle = SongTitle
 	self.Date = time.Now()
@@ -28,7 +57,6 @@ func (self *Recording) Setup(Singer string,SongTitle string){
 	self.Filename = fmt.Sprintf("%v-%v-%v_%v_%v.%v",self.Singer,self.SongTitle,y,m,d,FileEnding)
 
 	self.Cmd = exec.Command(FFmpegPath, "-f","dshow", "-i","audio=" + RecordingDevice, self.Filename)
-	//cmd := exec.Command("C:/Dev/ffmpeg/bin/ffmpeg.exe")
 	self.Cmd.Stdout = os.Stdout
 	self.Cmd.Stderr = os.Stderr
 	self.Cmd.Stdin = os.Stdin
@@ -36,15 +64,22 @@ func (self *Recording) Setup(Singer string,SongTitle string){
 	self.sigkill = make(chan interface{})
 }
 
-func (self *Recording) Start(){
+func (self *Recorder) Start(){
+	if self.SongTitle == nil || self.SongTitle != "" {
+		self.NetworkController.GetStatus()
+	}
+	self.Recording = true
 	go self.record()
 }
 
-func (self *Recording) Stop(){
-	self.sigkill<-true
+func (self *Recorder) Stop(){
+	if self.Recording {
+		self.Recording = false
+		self.sigkill<-true
+	}
 }
 
-func (self *Recording) record(){
+func (self *Recorder) record(){
 	err := self.Cmd.Start()
 	if err != nil {
 		println(err.Error())
