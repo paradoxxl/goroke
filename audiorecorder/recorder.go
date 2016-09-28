@@ -9,7 +9,7 @@ import (
 	"github.com/paradoxxl/goroke/xmlparser"
 )
 
-type Recorder struct{
+type RecorderController struct{
 	Singer string
 	SongTitle string
 	Date time.Time
@@ -25,14 +25,14 @@ type Recorder struct{
 }
 
 
-func (self *Recorder) RecordButtonPressed(){
+func (self *RecorderController) RecordButtonPressed(){
 	if self.Recording{
 		self.Stop()
 	}else{
 		self.Start()
 	}
 }
-func (self *Recorder) XMLInput(input string){
+func (self *RecorderController) XMLInput(input string){
 	parsed,err := xmlparser.ParseXML(input)
 	if err != nil{
 		fmt.Println(err)
@@ -48,7 +48,7 @@ func (self *Recorder) XMLInput(input string){
 	self.Setup(singer,title)
 }
 
-func (self *Recorder) Setup(Singer string,SongTitle string){
+func (self *RecorderController) Setup(Singer string,SongTitle string){
 	self.Singer = Singer
 	self.SongTitle = SongTitle
 	self.Date = time.Now()
@@ -64,7 +64,7 @@ func (self *Recorder) Setup(Singer string,SongTitle string){
 	self.sigkill = make(chan interface{})
 }
 
-func (self *Recorder) Start(){
+func (self *RecorderController) Start(){
 	if self.SongTitle == nil || self.SongTitle != "" {
 		self.NetworkController.GetStatus()
 	}
@@ -72,14 +72,14 @@ func (self *Recorder) Start(){
 	go self.record()
 }
 
-func (self *Recorder) Stop(){
+func (self *RecorderController) Stop(){
 	if self.Recording {
 		self.Recording = false
 		self.sigkill<-true
 	}
 }
 
-func (self *Recorder) record(){
+func (self *RecorderController) record(){
 	err := self.Cmd.Start()
 	if err != nil {
 		println(err.Error())

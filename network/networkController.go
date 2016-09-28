@@ -18,7 +18,7 @@ type NetworkController struct{
 	Ws *websocket.Conn
 	sigkill chan interface{}
 
-	Recorder audiorecorder.Recorder
+	Recorder audiorecorder.RecorderController
 }
 
 func NewNetworkController(KaraFunIP net.IP, KaraFunPort uint16) *NetworkController{

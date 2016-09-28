@@ -20,7 +20,7 @@ type WarriorController struct {
 	pollStop chan interface{}
 
 	NetworkController *network.NetworkController
-	Audiorecorder audiorecorder.Recorder
+	Audiorecorder audiorecorder.RecorderController
 }
 
 type WarriorControllerState struct {
