@@ -52,5 +52,5 @@ const (
 )
 
 const (
-	PollingDelay = time.Millisecond*50
+	PollingDelay = time.Millisecond*5
 )

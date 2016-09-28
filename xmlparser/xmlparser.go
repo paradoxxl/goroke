@@ -42,5 +42,5 @@ func ParseXML(data string) (*Status,error) {
 	var state = Status{}
 	err := xml.Unmarshal([]byte(bdata), &state)
 
-	return state,err
+	return &state,err
 }

@@ -5,7 +5,7 @@ import (
 	"golang.org/x/net/websocket"
 	"log"
 	"fmt"
-	"github.com/paradoxxl/goroke/audiorecorder"
+	"github.com/paradoxxl/goroke/Interfaces"
 )
 
 
@@ -18,7 +18,7 @@ type NetworkController struct{
 	Ws *websocket.Conn
 	sigkill chan interface{}
 
-	Recorder audiorecorder.RecorderController
+	Recorder Interfaces.IRecorderController
 }
 
 func NewNetworkController(KaraFunIP net.IP, KaraFunPort uint16) *NetworkController{
@@ -107,7 +107,8 @@ func (self *NetworkController) receiveMsg(){
 				log.Printf("receive error %v", err)
 				return
 			}
-			fmt.Printf("Receive: %s\n", msg)
+			//fmt.Printf("Receive: %s\n", msg)
+		self.Recorder.XMLInput(msg)
 		}
 	}
 }

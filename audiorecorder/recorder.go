@@ -5,8 +5,8 @@ import (
 	"os/exec"
 	"fmt"
 	"os"
-	"github.com/paradoxxl/goroke/network"
 	"github.com/paradoxxl/goroke/xmlparser"
+	"github.com/paradoxxl/goroke/Interfaces"
 )
 
 type RecorderController struct{
@@ -15,12 +15,12 @@ type RecorderController struct{
 	Date time.Time
 	Recording bool
 
-	Cmd exec.Cmd
+	Cmd *exec.Cmd
 	Filename string
 
 	sigkill chan interface{}
 
-	NetworkController *network.NetworkController
+	NetworkController Interfaces.INetworkController
 
 }
 
@@ -65,7 +65,7 @@ func (self *RecorderController) Setup(Singer string,SongTitle string){
 }
 
 func (self *RecorderController) Start(){
-	if self.SongTitle == nil || self.SongTitle != "" {
+	if self.SongTitle != "" {
 		self.NetworkController.GetStatus()
 	}
 	self.Recording = true

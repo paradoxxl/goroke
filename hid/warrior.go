@@ -1,11 +1,10 @@
 package HID
 
 import (
-	"github.com/paradoxxl/goroke/network"
 	"github.com/paradoxxl/hid"
 	"log"
 	"time"
-	"github.com/paradoxxl/goroke/audiorecorder"
+	"github.com/paradoxxl/goroke/Interfaces"
 )
 
 type WarriorController struct {
@@ -19,8 +18,8 @@ type WarriorController struct {
 
 	pollStop chan interface{}
 
-	NetworkController *network.NetworkController
-	Audiorecorder audiorecorder.RecorderController
+	NetworkController Interfaces.INetworkController
+	Audiorecorder Interfaces.IRecorderController
 }
 
 type WarriorControllerState struct {
@@ -98,6 +97,7 @@ func (self *WarriorController) detectChanges(input []byte) {
 		log.Printf("General Volume:\t%v", pos)
 
 		self.NetworkController.GeneralVolumeSliderChanged(pos)
+
 	}
 	if pos := scaleSliderPos(input[VoiceVolumeSliderBytePos]); self.State.VoiceVolumeSliderPos != pos {
 		self.State.VoiceVolumeSliderPos = pos
