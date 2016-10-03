@@ -14,6 +14,7 @@ type RecorderController struct{
 	SongTitle string
 	Date time.Time
 	Recording bool
+	DeviceName string
 
 	Cmd *exec.Cmd
 	Filename string
@@ -24,6 +25,26 @@ type RecorderController struct{
 
 }
 
+
+func (self *RecorderController) ListDevices(){
+
+	//ffmpeg -list_devices true -f dshow -i dummy
+	self.Cmd = exec.Command(FFmpegPath, "-list_devices","true", "-f","dshow","-i","dummy")
+	self.Cmd.Stdout = os.Stdout
+	self.Cmd.Stderr = os.Stderr
+	self.Cmd.Stdin = os.Stdin
+
+	err := self.Cmd.Start()
+	if err != nil {
+		println(err.Error())
+	}
+
+
+	err = self.Cmd.Wait()
+	if err != nil {
+		println(err.Error())
+	}
+}
 
 func (self *RecorderController) RecordButtonPressed(){
 	if self.Recording{
@@ -56,7 +77,7 @@ func (self *RecorderController) Setup(Singer string,SongTitle string){
 	y,m,d:=self.Date.Date()
 	self.Filename = fmt.Sprintf("%v-%v-%v_%v_%v.%v",self.Singer,self.SongTitle,y,m,d,FileEnding)
 
-	self.Cmd = exec.Command(FFmpegPath, "-f","dshow", "-i","audio=" + RecordingDevice, self.Filename)
+	self.Cmd = exec.Command(FFmpegPath, "-f","dshow", "-i","audio=" + self.DeviceName, self.Filename)
 	self.Cmd.Stdout = os.Stdout
 	self.Cmd.Stderr = os.Stderr
 	self.Cmd.Stdin = os.Stdin
