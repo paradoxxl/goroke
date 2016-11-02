@@ -6,9 +6,23 @@ import (
 	"log"
 	"fmt"
 	"github.com/paradoxxl/goroke/Interfaces"
+	"time"
+	"sync"
 )
 
-
+type SlidersState struct{
+	sync.RWMutex
+	Data map[string]*SliderState
+}
+type SliderState struct{
+	Position byte
+	Changed bool
+}
+func NewSlidersState() *SlidersState{
+	return & SlidersState{
+		Data:make(map[string]*SliderState),
+	}
+}
 
 type NetworkController struct{
 	IP net.IP
@@ -19,6 +33,40 @@ type NetworkController struct{
 	sigkill chan interface{}
 
 	Recorder Interfaces.IRecorderController
+
+	SlidersState *SlidersState
+
+}
+
+func (self *NetworkController) SlidersUpdate(){
+	for{
+
+			//Check all sliders and update when necessary
+
+			self.SlidersState.Lock()
+			defer self.SlidersState.Unlock()
+
+			if sl,ok:=self.SlidersState.Data[GeneralVolumeSlider];ok {
+				self.sendString(fmt.Sprintf(GeneralVolumeCommand,sl.Position))
+				sl.Changed = false
+			}
+			if sl,ok:=self.SlidersState.Data[VoiceVolumeSlider];ok {
+				self.sendString(fmt.Sprintf(VoiceVolumeCommand,sl.Position))
+				sl.Changed = false
+			}
+			if sl,ok:=self.SlidersState.Data[MaleVolumeSlider];ok {
+				self.sendString(fmt.Sprintf(MaleVolumeCommand,sl.Position))
+				sl.Changed = false
+			}
+			if sl,ok:=self.SlidersState.Data[FemaleVolumeSlider];ok {
+				self.sendString(fmt.Sprintf(FemaleVolumeCommand,sl.Position))
+				sl.Changed = false
+
+			}
+
+			time.Sleep(SlidersUpdateInterval)
+		}
+
 }
 
 func NewNetworkController(KaraFunIP net.IP, KaraFunPort uint16) *NetworkController{
@@ -28,21 +76,75 @@ func NewNetworkController(KaraFunIP net.IP, KaraFunPort uint16) *NetworkControll
 		Connected:false,
 		Ws:nil,
 		sigkill:make(chan interface{}),
+		SlidersState:NewSlidersState(),
 	}
 }
 
 
 func (self *NetworkController) GeneralVolumeSliderChanged(pos byte){
-	self.sendString(fmt.Sprintf(GeneralVolumeCommand,pos))
+	self.SlidersState.Lock()
+	defer self.SlidersState.Unlock()
+
+	if self.SlidersState != nil{
+		sl,ok:=self.SlidersState.Data[GeneralVolumeSlider];
+		if ok{
+			if sl.Position != pos {
+				sl.Position = pos
+				sl.Changed = true
+			}
+		}else{
+			self.SlidersState.Data[GeneralVolumeSlider] = &SliderState{Position:pos,Changed:true}
+		}
+	}
+
 }
 func (self *NetworkController) VoiceVolumeSliderPosChanged(pos byte){
-	self.sendString(fmt.Sprintf(VoiceVolumeCommand,pos))
+	self.SlidersState.Lock()
+	defer self.SlidersState.Unlock()
+
+	if self.SlidersState != nil{
+		sl,ok:=self.SlidersState.Data[VoiceVolumeSlider];
+		if ok{
+			if sl.Position != pos {
+				sl.Position = pos
+				sl.Changed = true
+			}
+		}else{
+			self.SlidersState.Data[VoiceVolumeSlider] = &SliderState{Position:pos,Changed:true}
+		}
+	}
 }
 func (self *NetworkController) MaleVolumeSliderPosChanged(pos byte){
-	self.sendString(fmt.Sprintf(MaleVolumeCommand,pos))
+	self.SlidersState.Lock()
+	defer self.SlidersState.Unlock()
+
+	if self.SlidersState != nil{
+		sl,ok:=self.SlidersState.Data[MaleVolumeSlider];
+		if ok{
+			if sl.Position != pos {
+				sl.Position = pos
+				sl.Changed = true
+			}
+		}else{
+			self.SlidersState.Data[MaleVolumeSlider] = &SliderState{Position:pos,Changed:true}
+		}
+	}
 }
 func (self *NetworkController) FemaleVolumeSliderPosChanged(pos byte){
-	self.sendString(fmt.Sprintf(FemaleVolumeCommand,pos))
+	self.SlidersState.Lock()
+	defer self.SlidersState.Unlock()
+
+	if self.SlidersState != nil{
+		sl,ok:=self.SlidersState.Data[FemaleVolumeSlider];
+		if ok{
+			if sl.Position != pos {
+				sl.Position = pos
+				sl.Changed = true
+			}
+		}else{
+			self.SlidersState.Data[FemaleVolumeSlider] = &SliderState{Position:pos,Changed:true}
+		}
+	}
 }
 func (self *NetworkController) PitchChanged(pitch int8){
 	self.sendString(fmt.Sprintf(PitchCommand,pitch))

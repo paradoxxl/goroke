@@ -1,5 +1,7 @@
 package network
 
+import "time"
+
 const url = "ws://%v:%v"
 const origin = "http://localhost"
 
@@ -20,5 +22,10 @@ const (
 	PitchCommand = "<action type=\"pitch\">%v</action>"
 	TempoCommand = "<action type=\"tempo\">%v</action>"
 
+	GeneralVolumeSlider = "GeneralVolumeSlider"
+	VoiceVolumeSlider = "VoiceVolumeSlider"
+	MaleVolumeSlider = "MaleVolumeSlider"
+	FemaleVolumeSlider = "FemaleVolumeSlider"
 
+	SlidersUpdateInterval = time.Millisecond*200
 )
