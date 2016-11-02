@@ -21,7 +21,7 @@ func main(){
 	}else{
 		if *RecordingDevice == ""{
 			fmt.Println("You did not set an recording device, hence recording will be unsupported")
-		}else{
+		}
 			orchestrator := orchestrator.Orchestrator{}
 			orchestrator.Setup(net.ParseIP("127.0.0.1"),57570)
 
@@ -29,7 +29,7 @@ func main(){
 
 			cstop := make(chan interface{})
 			<- cstop
-		}
+
 	}
 
 
